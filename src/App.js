@@ -9,6 +9,7 @@ import About from './components/About'
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
+  const [status, setStatus] = useState("all")
 
   useEffect(() => {
     const getTasks = async () => {
@@ -86,6 +87,33 @@ const App = () => {
     )
   }
 
+  // Edit Task
+  const editTask = async(id) => {
+    const taskUpdate = await fetchTask(id)
+    const updStatus = { ...taskUpdate, status: !taskUpdate.status }
+
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(updStatus),
+    })
+
+    const data = await res.json()
+    
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, status: data.status } : task
+      )
+    )
+      
+  }
+  
+  const statusHandler = (event) => {
+      setStatus(event.target.value)
+  }
+
   return (
     <Router>
       <div className='container'>
@@ -100,11 +128,16 @@ const App = () => {
               <>
                 {showAddTask && <AddTask onAdd={addTask} />}
                 {tasks.length > 0 ? (
-                  <Tasks
-                    tasks={tasks}
-                    onDelete={deleteTask}
-                    onToggle={toggleReminder}
-                  />
+                  <>
+                    <Tasks
+                      tasks={tasks}
+                      onDelete={deleteTask}
+                      onEdit={editTask}
+                      onToggle={toggleReminder}
+                      statusHandler={statusHandler}
+                      status={status}
+                      />
+                    </>
                 ) : (
                   'No Tasks To Show'
                 )}
