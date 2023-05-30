@@ -50,19 +50,13 @@ const App = () => {
 
     setTasks([...tasks, data])
 
-    // const id = Math.floor(Math.random() * 10000) + 1
-    // const newTask = { id, ...task }
-    // setTasks([...tasks, newTask])
+ 
   }
 
   // Delete Task
     const deleteTask = async (id) => {
-      const taskToDelete = await fetchTask(id)
-      // if(taskToDelete.status === true)
-      // alert('Cannot Delte completed task')
-      // else 
-      // {
-        const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+    
+      const res = await fetch(`http://localhost:5000/tasks/${id}`, {
         method: 'DELETE',
       })
       //We should control the response status to decide if we will change the state or not.
@@ -71,6 +65,7 @@ const App = () => {
         : alert('Error Deleting This Task')
     // }
     }
+  
 
   // Toggle Reminder
   const toggleReminder = async (id) => {
@@ -138,9 +133,7 @@ const App = () => {
                   <>
                     <Tasks
                       tasks={tasks}
-                      onDelete={(id) => {
-                        console.log();
-                      }}
+                      onDelete={deleteTask}
                       onEdit={editTask}
                       onToggle={toggleReminder}
                       statusHandler={statusHandler}

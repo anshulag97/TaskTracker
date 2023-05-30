@@ -1,6 +1,6 @@
 import { FaTimes, FaCheck } from 'react-icons/fa'
 
-const Task = ({ task, onDelete, onToggle, onEdit }) => {
+const Task = ({ task, onDelete, onToggle, onEdit , status}) => {
   return (
     <div
       className={`task ${task.reminder && 'reminder'}`}
@@ -14,10 +14,12 @@ const Task = ({ task, onDelete, onToggle, onEdit }) => {
             className={`${task.status ? 'activeTask' : 'noActiveTask'}`}
             onClick={() => onEdit(task.id)}
           />
-          <FaTimes
-            style={{ color: 'red', cursor: 'pointer' }}
-            onClick={() => onDelete(task.id)}
-          />
+        
+         {status === "completed" && <FaTimes
+         style={{ color: 'red', cursor: 'pointer' }}
+         onClick={() => onDelete(task.id)}
+       />}
+          
         </div>
       </h3>
       <p>{task.day}</p>

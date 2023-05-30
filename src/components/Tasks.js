@@ -19,13 +19,13 @@ const Tasks = ({ tasks, onDelete, onToggle, onEdit, statusHandler, status ,showS
 }
   
       {status === "completed" && tasks.filter(task => task.status).map((task, index) => (
-        <Task key={index} task={task} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} />
+        <Task key={index} task={task} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} status={status}/>
       ))}
       {status === "uncompleted" && tasks.filter(task => !task.status).map((task, index) => (
-        <Task key={index} task={task} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} />
+        <Task key={index} task={task} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} status={status}/>
       ))}
       {status === "all" && tasks.map((task, index) => (
-        <Task key={index} task={task} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} />
+        <Task key={index} task={task} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} status={status}/>
       ))}
     </>
   )
