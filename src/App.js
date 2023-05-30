@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
 import About from './components/About'
+import Completed from './components/Completed'
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false)
@@ -55,15 +56,21 @@ const App = () => {
   }
 
   // Delete Task
-  const deleteTask = async (id) => {
-    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
-      method: 'DELETE',
-    })
-    //We should control the response status to decide if we will change the state or not.
-    res.status === 200
-      ? setTasks(tasks.filter((task) => task.id !== id))
-      : alert('Error Deleting This Task')
-  }
+    const deleteTask = async (id) => {
+      const taskToDelete = await fetchTask(id)
+      // if(taskToDelete.status === true)
+      // alert('Cannot Delte completed task')
+      // else 
+      // {
+        const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+        method: 'DELETE',
+      })
+      //We should control the response status to decide if we will change the state or not.
+      res.status === 200
+        ? setTasks(tasks.filter((task) => task.id !== id))
+        : alert('Error Deleting This Task')
+    // }
+    }
 
   // Toggle Reminder
   const toggleReminder = async (id) => {
@@ -131,7 +138,9 @@ const App = () => {
                   <>
                     <Tasks
                       tasks={tasks}
-                      onDelete={deleteTask}
+                      onDelete={(id) => {
+                        console.log();
+                      }}
                       onEdit={editTask}
                       onToggle={toggleReminder}
                       statusHandler={statusHandler}
@@ -145,6 +154,13 @@ const App = () => {
             }
           />
           <Route path='/about' element={<About />} />
+          <Route path='/completed' element={
+          <Completed 
+            tasks={tasks.filter(task => task.status)}
+            onDelete = {deleteTask}
+            onEdit = {editTask}
+            onToggle={toggleReminder}
+          />} />
         </Routes>
         <Footer />
       </div>

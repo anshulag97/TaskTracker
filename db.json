@@ -11,21 +11,8 @@
       "id": 2,
       "text": "Meeting at School",
       "day": "Feb 6th at 1:30pm",
-      "reminder": false,
-      "status": true
-    },
-    {
-      "text": "test",
-      "day": "aaa",
       "reminder": true,
-      "id": 4,
       "status": true
-    },
-    {
-      "text": "homework",
-      "day": "friday",
-      "reminder": true,
-      "id": 5
     }
   ]
 }
