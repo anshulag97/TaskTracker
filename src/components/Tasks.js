@@ -13,7 +13,7 @@ const Tasks = ({ tasks, onDelete, onToggle, onEdit, statusHandler, status ,showS
       >
           <option value="all">All</option>
           <option value="completed">Completed</option>
-          <option value="uncompleted">unCompleted</option>
+          <option value="uncompleted">Incomplete</option>
       </select>)
       : null
 }
