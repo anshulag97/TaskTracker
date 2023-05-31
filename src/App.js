@@ -1,26 +1,22 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
 import About from "./components/About";
-import Completed from "./components/Completed";
+import Complete from "./components/Complete";
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
   const [tasks, setTasks] = useState([]);
-  const [status, setStatus] = useState("all");
-
   useEffect(() => {
     const getTasks = async () => {
       const tasksFromServer = await fetchTasks();
       setTasks(tasksFromServer);
     };
-
     getTasks();
   }, []);
-
   // Fetch Tasks
   const fetchTasks = async () => {
     const res = await fetch("http://localhost:5000/tasks");
@@ -28,43 +24,39 @@ const App = () => {
 
     return data;
   };
-
   // Fetch Task
   const fetchTask = async (id) => {
     const res = await fetch(`http://localhost:5000/tasks/${id}`);
     const data = await res.json();
+
     return data;
   };
 
-  // Add Task
-  const addTask = async (task) => {
-    const res = await fetch("http://localhost:5000/tasks", {
-      method: "POST",
+  const updateTask = async (id, status) => {
+    const taskToToggle = await fetchTask(id);
+    console.log(JSON.stringify({ ...taskToToggle, status }));
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify(task),
+      body: JSON.stringify({ ...taskToToggle, status }),
     });
-
-    const data = await res.json();
-
-    setTasks([...tasks, data]);
+    setTasks(
+      tasks.map((task) => (task.id === id ? { ...task, status } : task))
+    );
+    // change status
   };
 
   // Delete Task
   const deleteTask = async (id) => {
-    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+    await fetch(`http://localhost:5000/tasks/${id}`, {
       method: "DELETE",
     });
-    //We should control the response status to decide if we will change the state or not.
-    res.status === 200
-      ? setTasks(tasks.filter((task) => task.id !== id))
-      : alert("Error Deleting This Task");
-    // }
+    setTasks(tasks.filter((task) => task.id !== id));
   };
-
   // Toggle Reminder
-  const toggleReminder = async (id) => {
+  const toggleReminder = async (e, id) => {
     const taskToToggle = await fetchTask(id);
     const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
 
@@ -75,7 +67,6 @@ const App = () => {
       },
       body: JSON.stringify(updTask),
     });
-
     const data = await res.json();
 
     setTasks(
@@ -84,33 +75,25 @@ const App = () => {
       )
     );
   };
-
-  // Edit Task
-  const editTask = async (id) => {
-    const taskUpdate = await fetchTask(id);
-    const updStatus = { ...taskUpdate, status: !taskUpdate.status };
-
-    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
-      method: "PUT",
+  // Add Task
+  const addTask = async (task) => {
+    console.log(task);
+    const res = await fetch("http://localhost:5000/tasks", {
+      method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify(updStatus),
+      body: JSON.stringify(task),
     });
 
     const data = await res.json();
+    console.log(data);
+    setTasks([...tasks, data]);
 
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, status: data.status } : task
-      )
-    );
+    // const id = Math.floor(Math.random() * 10000 + 1);
+    // const newTask = { id, ...task };
+    // setTasks([...tasks, newTask]);
   };
-
-  const statusHandler = (event) => {
-    setStatus(event.target.value);
-  };
-
   return (
     <Router>
       <div className="container">
@@ -123,33 +106,31 @@ const App = () => {
             path="/"
             element={
               <>
+                <span className="title">Active Tasks</span>
+                <br />
                 {showAddTask && <AddTask onAdd={addTask} />}
-                {tasks.length > 0 ? (
-                  <>
-                    <Tasks
-                      tasks={tasks}
-                      onDelete={deleteTask}
-                      onEdit={editTask}
-                      onToggle={toggleReminder}
-                      statusHandler={statusHandler}
-                      status={status}
-                    />
-                  </>
+                {tasks.filter((task) => task.status !== "Complete").length >
+                0 ? (
+                  <Tasks
+                    tasks={tasks.filter((task) => task.status !== "Complete")}
+                    onUpdate={updateTask}
+                    onToggle={toggleReminder}
+                    onDelete={deleteTask}
+                  />
                 ) : (
                   "No Tasks To Show"
                 )}
               </>
             }
           />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} /> |
           <Route
-            path="/completed"
+            path="/complete"
             element={
-              <Completed
-                tasks={tasks.filter((task) => task.status)}
+              <Complete
+                tasks={tasks}
+                onUpdate={updateTask}
                 onDelete={deleteTask}
-                onEdit={editTask}
-                onToggle={toggleReminder}
               />
             }
           />
