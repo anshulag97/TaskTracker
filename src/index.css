@@ -110,3 +110,10 @@ footer {
   margin-top: 30px;
   text-align: center;
 }
+.noActiveTask {
+  color: #c1c1ff;
+}
+
+.activeTask {
+  color: blue;
+}
