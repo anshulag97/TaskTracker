@@ -4,7 +4,8 @@
       "text": "Doctor Appointment",
       "day": "Thursday 4PM",
       "reminder": true,
-      "id": 7
+      "id": 7,
+      "status": "Complete"
     }
   ]
 }
