@@ -1,11 +1,10 @@
 {
   "tasks": [
     {
-      "text": "Grocery Shopping",
-      "day": "Wednesday 4PM",
+      "text": "Doctor Appointment",
+      "day": "Thursday 4PM",
       "reminder": true,
-      "status": "Complete",
-      "id": 6
+      "id": 7
     }
   ]
 }
